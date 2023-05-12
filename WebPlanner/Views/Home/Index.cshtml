@@ -1,0 +1,158 @@
+﻿@model WebPlanner.Models.HomeViewModel
+@{
+    ViewData["Title"] = "Мои задачи";
+}
+
+<div class="container-xl text-center">
+    <h1 class="display-4">Мои задачи</h1>
+</div>
+
+<div class="container-xl mt-2">
+    @if (TempData["Feedback"] != null)
+    {
+        <div class="text-danger text-center display-6">
+            @TempData["Feedback"]
+        </div>
+    }
+</div>
+
+<div class="container-xl mt-3">
+    <div class="row row-cols-1 row-cols-md-1 justify-content-center">
+        @*Left*@
+        <div class="col-md-8">
+            <a asp-action="Add" asp-controller="Home" class="text-primary">Добавить задачу</a>
+            @{
+                int i = 0;
+            }
+            <form class="mt-2" asp-action="Index" asp-controller="Home" method="get">
+
+                <div class="row gx-2">
+                    <div class="col-lg-6">
+                        <div class="">Сортировать по:</div>
+                            <select class="form-select" asp-for="OrderBy">
+                                <option selected value="Deadline">Близжайщие по времени</option>
+                                <option  value="DeadlineDescend">Дальнейщие по времени</option>
+                                <option value="Name">Имени сначала алфавита</option>
+                                <option value="NameDescend">Имени с конца алфавита</option>
+                                <option value="Priority">Приоритету сначала высший</option>
+                                <option value="PriorityDescend">Приоритету сначала низший</option>
+                                <option value="Completed">Сначала не выполненные</option>
+                                <option value="CompletedDescend">Сначала выполненные</option>
+                            </select>
+                        </div>
+
+                    <div class="mt-2 mt-lg-0 col-lg-6">
+                        <div class="">Поиск по дате:</div>
+                        <input class="form-control" type="date" asp-for="SearchByDate"/>
+                    </div>
+                </div>
+
+                <div class="mt-2">
+                    <div class="">Поиск по:</div>
+                    <div class="row gx-1">
+                        <div class="col-4 col-lg-3">
+                            <select class="form-select" asp-for="SearchBy">
+                              <option selected value="Name">Имени</option>
+                              <option  value="Tag">Тегу</option>
+                            </select>
+                        </div>
+                        <div class="col-8 col-lg-9">
+                            <input class="form-control" type="text" placeholder="Поиск" asp-for="SearchString"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex justify-content-between">
+                    <button class="btn btn-primary" type="submit">Применить</button>
+                    <a asp-action="Index" asp-controller="Home">Сбросить</a>
+                </div>
+
+            </form>
+            
+            <div class="accordion mt-3">
+                @foreach (var item in Model.ToDos)
+                {
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="accordion-item-@i">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#accordion-item-collapse-@i" aria-expanded="false"
+                                aria-controls="accordion-item-collapse-@i">
+
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold">@item.ToDo.Name</span>
+                                    <span class="mt-1">
+                                            @if (item.ToDo.Completed){<span class="text-success">Выполнено</span>}
+                                            else{<span class="text-danger">Не выполнено</span>}
+                                    </span>
+                                    @{
+                                        string colorClass = "";
+                                    }
+                                    @if (item.Priority == "1-Высший")
+                                    {
+                                        colorClass = "text-danger";
+                                    }
+                                    else if (item.Priority == "2-Высокий")
+                                    {
+                                        colorClass = "text-warning";
+                                    }
+                                    else if (item.Priority == "3-Средний")
+                                    {
+                                        colorClass = "text-success";
+                                    }
+                                    else if (item.Priority == "4-Низкий")
+                                    {
+                                        colorClass = "text-info";
+                                    }
+                                    else if (item.Priority == "5-Низший")
+                                    {
+                                        colorClass = "text-secondary";
+                                    }
+                                    <span class="mt-1">Приоритет:<span class="ms-1 @colorClass">@item.Priority</span></span>
+                                    <span class="mt-1">Сделать до:<span class="ms-1">@item.ToDo.Deadline.ToShortDateString()</span></span>
+                                    <span class="mt-1">
+                                    @if(item.Tags != "")
+                                    {
+                                        List<string> tags = item.Tags.Split(',').ToList();
+                                        @foreach (var tag in tags)
+                                        {
+                                            <span class="text-primary me-1">#@tag</span>
+                                        }
+                                    }    
+                                    </span>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="accordion-item-collapse-@i" class="accordion-collapse collapse"
+                        aria-labelledby="accordion-item-@i">
+                            <div class="accordion-body">
+                                @if (item.ToDo.Description != null)
+                                {
+                                    <h6>Описание:</h6>
+                                    <p>@item.ToDo.Description</p>
+                                }
+                                else
+                                {
+                                    <p>Нет описания</p>
+                                }
+                                <div class="d-flex justify-content-end">
+                                    <a asp-action="Update" asp-controller="Home" asp-route-id="@item.ToDo.Id"
+                                    asp-route-priority="@item.Priority" class="text-primary">Изменить</a>
+                                     <a asp-action="Delete" asp-controller="Home" asp-route-id="@item.ToDo.Id"
+                                        class="text-danger ms-2">Удалить</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                i++;
+                }
+            </div>
+        </div>
+        @*Right*@
+        <div class="col">
+
+        </div>
+    </div>
+</div>
+
+
+

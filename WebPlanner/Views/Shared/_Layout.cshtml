@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    @*Bootsrap Styles*@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @*Tagify Styles*@
+    <link href="~/lib/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+    @*Main Styles*@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebPlanner.styles.css" asp-append-version="true" />
+
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom  box-shadow mb-3">
+            <div class="container-xl">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebPlanner</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="LogOut">Выйти</a>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @*Jquery*@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @*Bootsrap Scripts*@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @*Jquery Validation Scripts*@
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    @*Tagify Scripts*@
+    <script src="~/lib/tagify/dist/tagify.js"></script>
+    <script src="~/lib/tagify/dist/tagify.polyfills.min.js"></script>
+    @*Main Scripts*@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

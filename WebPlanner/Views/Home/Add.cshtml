@@ -1,0 +1,85 @@
+﻿@model WebPlanner.Models.ToDoViewModel
+@{
+    ViewData["Title"] = "Добавить задачу";
+}
+<div class="container-xl">
+    <h1 class="text-center">@ViewData["Title"]</h1>
+    <div class="d-flex justify-content-center">
+        <div class="col-10 col-sm-6 col-md-6 col-lg-4 d-flex flex-column">
+            <form asp-controller="Home" asp-action="Add" method="post">
+                <input class="mt-3 form-control" type="text" placeholder="Имя задачи" asp-for="ToDo.Name"
+                data-val-required="Введите имя задачи"/>
+                <span asp-validation-for="ToDo.Name" class="text-danger mt-2"></span>
+
+                <input class="mt-3 form-control" type="text" placeholder="Описание" asp-for="ToDo.Description"
+                data-val-required="Введите описание"/>
+                <span asp-validation-for="ToDo.Description" class="text-danger mt-2"></span>
+
+                <input class="mt-3 form-control" type="date" asp-for="ToDo.Deadline"
+                data-val-required="Выберите сроки"/>
+                 <span asp-validation-for="ToDo.Deadline" class="text-danger mt-2"></span>
+
+                <div class="form-check">
+                    <label class="mt-3 d-block form-check-label">
+                        Выполнено?
+                        <input class = "form-check-input" type="checkbox" asp-for="ToDo.Completed" />
+                    </label>
+                </div>
+
+                <label class="mt-3">Приоритет:</label>
+                <select class="mt-2 form-select" asp-for="ToDo.PriorityId" asp-items="ViewBag.Priorities"></select>
+
+                <input name="tags" placeholder="Теги" class="tags-input mt-3 form-control" asp-for="Tags">
+                
+
+                @if (ViewData["ValidateMessage"] != null)
+                {
+                    <label class="mt-3 text-primary">@ViewData["ValidateMessage"]</label>
+                }
+                <div class="mt-3 d-flex justify-content-between align-items-end">
+                    <button class= "btn btn-primary" type="submit">Добавить</button>
+                    <a class="ms-3" asp-action="Index" asp-controller="Home">Назад</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section scripts
+{
+    <script>
+        /// tag input
+        var input = document.querySelector('input[name=tags]'),
+        tagify =new Tagify( input,{
+            //dropdown footer template
+            templates:{
+                dropdownFooter(suggestions){
+                        var hasMore = suggestions.length - this.settings.dropdown.maxItems;
+
+                        return hasMore > 0
+                        ? `<footer data-selector='tagify-suggestions-footer' class="${this.settings.classNames.dropdownFooter}">
+                            Еще ${hasMore} тегов
+                            </footer>`
+                        : '';
+                    }
+            },
+            // tags from db
+            whitelist : [@ViewBag.Tags],
+            dropdown : {
+                classname     : "color-blue",
+                enabled       : 0,              // show the dropdown immediately on focus
+                maxItems      : 5,
+                position      : "text",         // place the dropdown near the typed text
+                closeOnSelect : false,          // keep the dropdown open after selecting a suggestion
+                highlightFirst: true
+            },
+            originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
+            mod:'mix'
+        }   
+        );
+        //ignore tag input validarion
+        jQuery.validator.setDefaults({ ignore: ".tagify [contenteditable], .my-class [contenteditable]"});
+        
+    </script>
+}

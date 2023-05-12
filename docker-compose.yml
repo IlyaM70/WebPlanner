@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  webplanner:
+    image: ${DOCKER_REGISTRY-}webplanner
+    build:
+      context: .
+      dockerfile: WebPlanner/Dockerfile
+  db:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      - SA_PASSWORD=admin1
+      - ACCEPT_EULA=Y
+    ports:
+      - "5434:1433"
