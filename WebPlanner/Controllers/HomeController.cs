@@ -49,97 +49,7 @@ namespace WebPlanner.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
-        public IActionResult Index(HomeViewModel viewModel, IFormCollection formValues)
-        {
-            var userId = GetUserId();
-            viewModel.ToDos = GetToDoList(viewModel, userId);
-            return View(viewModel);
-        }
-
-
-        // Список задач для главной страницы
-        public List<ToDoViewModel> GetToDoList(HomeViewModel viewModel, int userId)
-        {
-            string orderBy = viewModel.OrderBy;
-            string searchBy = viewModel.SearchBy;
-            string searchString = viewModel.SearchString;
-            var query = db.ToDos.Where(td => td.UserId == userId);
-            List<ToDo> toDoList = new List<ToDo>();
-
-
-            switch (orderBy)
-            {
-                case "Deadline":
-                    query = query.OrderBy(td => td.Deadline);
-                    break;
-                case "DeadlineDescend":
-                    query = query.OrderByDescending(td => td.Deadline);
-                    break;
-                case "Name":
-                    query = query.OrderBy(td => td.Name);
-                    break;
-                case "NameDescend":
-                    query = query.OrderByDescending(td => td.Name);
-                    break;
-                case "Priority":
-                    query = query.OrderBy(td => td.PriorityId);
-                    break;
-                case "PriorityDescend":
-                    query = query.OrderByDescending(td => td.PriorityId);
-                    break;
-                case "Completed": // сначало не выполненные
-                    query = query.OrderBy(td => td.Completed);
-                    break;
-                case "CompletedDescend": // сначало выполненные
-                    query = query.OrderByDescending(td => td.Completed);
-                    break;
-                default:
-                    break;
-            }
-
-            if(viewModel.SearchByDate!= null)
-            {
-                 query = query.Where(td => td.Deadline == viewModel.SearchByDate);
-            }
-
-            toDoList = query.ToList();
-
-            foreach (ToDo toDo in toDoList)
-            {
-                string priority = Priorities.FirstOrDefault(p => p.Id == toDo.PriorityId).Name;
-
-                var tags = GetToDoTags(toDo);
-
-                string tagsStr = String.Join(",", tags);
-
-                viewModel.ToDos.Add(new ToDoViewModel
-                {
-                    ToDo = toDo,
-                    Priority = priority,
-                    Tags = tagsStr
-                    // file
-                });
-            }
-
-            if (searchString != string.Empty && searchString != null)
-            {
-                switch (searchBy)
-                {
-                    case "Name":
-                        viewModel.ToDos = viewModel.ToDos.Where(td=>td.ToDo.Name==searchString).ToList();
-                        break;
-                    case "Tag":
-                        searchString = MakeProperTag(searchString);
-                        viewModel.ToDos = viewModel.ToDos.Where(td => td.Tags.Contains(searchString)).ToList();
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            return viewModel.ToDos;
-        }
+        
 
 
         [HttpGet]
@@ -277,11 +187,95 @@ namespace WebPlanner.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-       
+
 
 
         //////////////  Функции
-        
+
+        // Список задач для главной страницы
+        public List<ToDoViewModel> GetToDoList(HomeViewModel viewModel, int userId)
+        {
+            string orderBy = viewModel.OrderBy;
+            string searchBy = viewModel.SearchBy;
+            string searchString = viewModel.SearchString;
+            var query = db.ToDos.Where(td => td.UserId == userId);
+            List<ToDo> toDoList = new List<ToDo>();
+
+
+            switch (orderBy)
+            {
+                case "Deadline":
+                    query = query.OrderBy(td => td.Deadline);
+                    break;
+                case "DeadlineDescend":
+                    query = query.OrderByDescending(td => td.Deadline);
+                    break;
+                case "Name":
+                    query = query.OrderBy(td => td.Name);
+                    break;
+                case "NameDescend":
+                    query = query.OrderByDescending(td => td.Name);
+                    break;
+                case "Priority":
+                    query = query.OrderBy(td => td.PriorityId);
+                    break;
+                case "PriorityDescend":
+                    query = query.OrderByDescending(td => td.PriorityId);
+                    break;
+                case "Completed": // сначало не выполненные
+                    query = query.OrderBy(td => td.Completed);
+                    break;
+                case "CompletedDescend": // сначало выполненные
+                    query = query.OrderByDescending(td => td.Completed);
+                    break;
+                default:
+                    break;
+            }
+
+            if (viewModel.SearchByDate != null)
+            {
+                query = query.Where(td => td.Deadline.Date == viewModel.SearchByDate.Value.Date);
+            }
+
+            toDoList = query.ToList();
+
+            foreach (ToDo toDo in toDoList)
+            {
+                string priority = Priorities.FirstOrDefault(p => p.Id == toDo.PriorityId).Name;
+
+                var tags = GetToDoTags(toDo);
+
+                string tagsStr = String.Join(",", tags);
+
+                viewModel.ToDos.Add(new ToDoViewModel
+                {
+                    ToDo = toDo,
+                    Priority = priority,
+                    Tags = tagsStr
+                    // file
+                });
+            }
+
+            if (searchString != string.Empty && searchString != null)
+            {
+                switch (searchBy)
+                {
+                    case "Name":
+                        viewModel.ToDos = viewModel.ToDos.Where(td => td.ToDo.Name == searchString).ToList();
+                        break;
+                    case "Tag":
+                        searchString = MakeProperTag(searchString);
+                        viewModel.ToDos = viewModel.ToDos.Where(td => td.Tags.Contains(searchString)).ToList();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return viewModel.ToDos;
+        }
+
+
         public int GetUserId()
         {
             var userId = Convert.ToInt32(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
