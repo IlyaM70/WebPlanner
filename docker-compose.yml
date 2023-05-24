@@ -1,15 +1,32 @@
 version: '3.4'
 
+networks:
+    dev:
+      driver: bridge
+
 services:
   webplanner:
+    container_name: webplanner
     image: ${DOCKER_REGISTRY-}webplanner
     build:
       context: .
       dockerfile: WebPlanner/Dockerfile
-  db:
-    image: mcr.microsoft.com/mssql/server
+    depends_on:
+     - "db"
+    networks:
+     - dev
     environment:
-      - SA_PASSWORD=admin1
-      - ACCEPT_EULA=Y
+     - ConnectionStrings__SqlServer=User ID=postgres;Password=postgres;Server=db,5432;Database=WebPlannerDb;Integrated Security=true;TrustServerCertificate=True;
+ 
+  db:
+    container_name: db
+    image: postgres:latest
+    environment:
+       - POSTGRES_USER=postgres
+       - POSTGRES_PASSWORD=postgres
+       - POSTGRES_DB=WebPlannerDb
     ports:
-      - "5434:1433"
+      - "5433:5432"
+    restart: always
+    networks:
+      - dev

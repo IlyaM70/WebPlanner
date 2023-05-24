@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
-{   options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
+{   options.UseNpgsql(builder.Configuration.GetConnectionString("SqlServer"));
 });
 builder.Services.AddAuthentication("Cookies").AddCookie(options =>
 {
@@ -19,7 +19,17 @@ builder.Services.AddAuthentication("Cookies").AddCookie(options =>
 
 var app = builder.Build();
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 /// Initialize db
+/// 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
+
 DbInitializer.Initilize(app);
 
 // Configure the HTTP request pipeline.
@@ -30,7 +40,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
