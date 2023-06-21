@@ -10,3 +10,6 @@ Frontend – HTML, CSS, Bootstrap (CSS фрейморк), JavaScript, JQuery (Ja
 СУБД – PostgreSQL;</br>
 ORM – Entity Framework;</br>
 
+
+https://webplanner-ilyam70.amvera.io/
+
