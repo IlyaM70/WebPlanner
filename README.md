@@ -11,5 +11,6 @@ Frontend – HTML, CSS, Bootstrap (CSS фрейморк), JavaScript, JQuery (Ja
 ORM – Entity Framework;</br>
 
 
-https://webplanner-ilyam70.amvera.io/
+https://webplanner-ilyam70.amvera.io/</br>
+Зарегистрируйте свой аккаунт, либо войдите с помошью логина и пароля - admin
 
