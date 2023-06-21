@@ -7,6 +7,6 @@ WebPlanner - приложение для управлления списком �
 Тип приложения - MVC;</br>
 Backend-framework – ASP.NET;</br>
 Frontend – HTML, CSS, Bootstrap (CSS фрейморк), JavaScript, JQuery (JavaScript фреймфорк), Tagify (JavaScript библиотека для работы с тегами);</br>
-СУБД – MSSQL;</br>
+СУБД – PostgreSQL;</br>
 ORM – Entity Framework;</br>
 
