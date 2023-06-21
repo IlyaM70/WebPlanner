@@ -4,9 +4,9 @@ WebPlanner - приложение для управлления списком �
 
 Стек технологий:
 
-Тип приложения - MVC;
-Backend-framework – ASP.NET;
-Frontend – HTML, CSS, Bootstrap (CSS фрейморк), JavaScript, JQuery (JavaScript фреймфорк), Tagify (JavaScript библиотека для работы с тегами);
-СУБД – MSSQL;
-ORM – Entity Framework;
+Тип приложения - MVC;</br>
+Backend-framework – ASP.NET;</br>
+Frontend – HTML, CSS, Bootstrap (CSS фрейморк), JavaScript, JQuery (JavaScript фреймфорк), Tagify (JavaScript библиотека для работы с тегами);</br>
+СУБД – MSSQL;</br>
+ORM – Entity Framework;</br>
 
